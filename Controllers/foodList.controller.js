@@ -44,15 +44,21 @@ exports.getFoodLists = (request, response, next) => {
 
 exports.getFoodList = (request, response, next) => {
     try {
-        foodListModel.read({_id: request.params.id}, (err, foodList) => {
+        foodListModel.read({createdAt: {$gte: request.params.date}}, (err, foodList) => {
             if (err) {
                 response.json({
                     error: err
                 });
             } else {
-                response.json({
-                    foodList: foodList
-                });
+                if (foodList[0]) {
+                    response.json({
+                        foodList: foodList
+                    });
+                } else {
+                    response.json({
+                        foodList: null
+                    })
+                }
             }
         });
     } catch (err) {
@@ -65,19 +71,32 @@ exports.getFoodList = (request, response, next) => {
 exports.updateFoodList = (request, response, next) => {
     try {
         const foodList = request.body.foodList;
-    
-        foodListModel.update({_id: request.params.id}, foodList, (err, foodList) => {
-            if (err) {
-                response.json({
-                    error: err
-                });
-            } else {
-                response.json({
-                    message: "Food List updated successfully",
-                    foodList: foodList
-                });
-            }
-        });
+        if (foodList.food.length) {
+            foodListModel.update({_id: request.params.id}, foodList, (err, foodList) => {
+                if (err) {
+                    response.json({
+                        error: err
+                    });
+                } else {
+                    response.json({
+                        message: "Food List updated successfully",
+                        gymnasticList: foodList
+                    });
+                }
+            });
+        } else {
+            foodListModel.delete({_id: request.params.id}, (err, foodList) => {
+                if (err) {
+                    response.json({
+                        error: err
+                    });
+                } else {
+                    response.json({
+                        message: "Food List deleted successfully"
+                    });
+                }
+            });
+        }
     } catch (err) {
         response.json({
             error: err

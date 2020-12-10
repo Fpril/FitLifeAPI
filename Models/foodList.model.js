@@ -1,7 +1,7 @@
 const mongoose = require('../Config/database');
 
 const foodListSchema = new mongoose.Schema({
-    dishes: [{
+    food: [{
         id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Food',

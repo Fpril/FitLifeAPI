@@ -1,4 +1,5 @@
 const gymnasticModel = require('../Data Access Objects/gymnastic.dao');
+const mongoose = require('../Config/database');
 
 exports.createGymnastic = (request, response, next) => {
     try {
@@ -52,6 +53,27 @@ exports.getGymnastic = (request, response, next) => {
             } else {
                 response.json({
                     gymnastic: gymnastic
+                });
+            }
+        });
+    } catch (err) {
+        response.json({
+            error: err
+        });
+    }
+}
+
+exports.getGymnasticByIds = (request, response, next) => {
+    try {
+        const ids = request.body.array.map(id => mongoose.Types.ObjectId(id));
+        gymnasticModel.read({_id: {$in: ids}}, (err, gymnastics) => {
+            if (err) {
+                response.json({
+                    error: err
+                });
+            } else {
+                response.json({
+                    gymnastics: gymnastics
                 });
             }
         });

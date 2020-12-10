@@ -7,8 +7,8 @@ gymnasticSchema.statics = {
         gymnastic.save(cb);
     },
 
-    read: async function (query, cb) {
-        await this.find(query, cb);
+    read: function (query, cb) {
+        this.find(query, cb);
     },
 
     update: function (query, updateData, cb) {

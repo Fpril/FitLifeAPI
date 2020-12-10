@@ -62,6 +62,27 @@ exports.getFood = (request, response, next) => {
     }
 }
 
+exports.getFoodByIds = (request, response, next) => {
+    try {
+        const ids = request.body.array.map(id => mongoose.Types.ObjectId(id));
+        foodModel.read({_id: {$in: ids}}, (err, food) => {
+            if (err) {
+                response.json({
+                    error: err
+                });
+            } else {
+                response.json({
+                    food: food
+                });
+            }
+        });
+    } catch (err) {
+        response.json({
+            error: err
+        });
+    }
+}
+
 exports.updateFood = (request, response, next) => {
     try {
         const food = request.body.food;
