@@ -50,31 +50,36 @@ exports.getGymnasticList = (request, response, next) => {
                 response.json({
                     error: err
                 });
-            } else {     
-                const gymnastics = gymnasticList[0].gymnastics;
-                const todayList = [];
-                for (obj of gymnastics) {
-                    await gymnasticModel.read({_id: obj.id}, (err, gymnastic) => {
-                        if (err) {
-                            response.json({
-                                error: err
-                            });
-                        } else {
-                            const newObj = {
-                                id: gymnastics[0].id,
-                                name: gymnastic[0].name,
-                                times: obj.times,
-                                units: gymnastic[0].units
+            } else {  
+                if (gymnasticList[0]) {
+                    const gymnastics = gymnasticList[0].gymnastics;
+                    const todayList = [];
+                    for (obj of gymnastics) {
+                        await gymnasticModel.read({_id: obj.id}, (err, gymnastic) => {
+                            if (err) {
+                                response.json({
+                                    error: err
+                                });
+                            } else {
+                                const newObj = {
+                                    id: gymnastics[0].id,
+                                    name: gymnastic[0].name,
+                                    times: obj.times,
+                                    units: gymnastic[0].units
+                                }
+                                todayList.push(newObj);
                             }
-                            todayList.push(newObj);
+                        });
+                    }
+                    response.json({
+                        gymnasticList: {
+                            gymnasticObj: gymnasticList[0],
+                            list:todayList
                         }
                     });
-                }
+                } 
                 response.json({
-                    gymnasticList: {
-                        gymnasticObj: gymnasticList[0],
-                        list:todayList
-                    }
+                    gymnasticList: null
                 });
             }
         });
